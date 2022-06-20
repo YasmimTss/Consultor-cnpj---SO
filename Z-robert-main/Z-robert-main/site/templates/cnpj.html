@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href={{url_for('static', filename="style.css")}}>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;900&amp;display=swap" rel="stylesheet"> 
+        <title>CONSULTAR CNPJ</title>
+    </head>
+    <body>
+         <h1>CONSULTAR CNPJ</h1>
+        
+        <div class="tela">
+        <input type="text" name="cnpj" id="cnpj">
+        <button type="button" id="pesquisar">Enviar</button>
+        
+        <span id="loading" style="display:none;">[CARREGANDO...]</span>
+        <br/>NOME: <strong><span id="nome"></span></strong><br/>
+        TELEFONE: <strong><span id="telefone"></span></strong><br/>
+        LOGRADOURO: <strong><span id="logradouro"></span></strong>
+        , <strong><span id="bairro"></span></strong>
+        , <strong><span id="uf"></span></strong><br/><hr>
+        NOME FANTASIA: <strong><span id="fantasia"></span></strong><br/>
+        SITUAÇÃO: <strong><span id="situacao"></span></strong>
+        , <strong><span id="porte"></span></strong>
+        , <strong><span id="status"></span></strong><br/>
+        NATUREZA: <strong><span id="natureza"></span></strong><br/>
+        CAPITAL SOCIAL: <strong><span id="capital"></span></strong></div>
+        <h5>© Copyright 2022 by Yasbrina</h5>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script>           
+            $("#pesquisar").on("click", function(){
+
+                var loading = $("#loading");
+                var cnpj = $("#cnpj").val().replace(/[^0-9]/g,'');
+
+                loading.show();
+                if(cnpj !== "" && cnpj.length == 14){
+
+                    $.ajax({
+                        url: "https://www.receitaws.com.br/v1/cnpj/"+cnpj,
+                        type: "GET",
+                        crossDomain: true,
+                        dataType: "jsonp",
+                        success: function (data) {
+
+                            if(data.erro !== undefined){
+                                alert("CEP inválido ou não encontrado");
+                            }else{
+                                $("#nome").text(data.nome);
+                                $("#telefone").text(data.telefone);
+                                $("#logradouro").text(data.logradouro);
+                                $("#bairro").text(data.bairro); 
+                                $("#uf").text(data.uf);
+                                $("#fantasia").text(data.fantasia);
+                                $("#situacao").text(data.situacao);
+                                $("#porte").text(data.porte);
+                                $("#status").text(data.status);
+                                $("#natureza").text(data.natureza_juridica);
+                                $("#capital").text(data.capital_social);
+                                
+                                
+                            }
+                        },
+                        error: function(data){
+                            alert("Algum erro ocorreu, consulte o log.");
+                        },
+                        complete: function(){
+                            loading.hide();
+                        }
+                    });
+
+                }else{
+                    alert("CNPJ deve conter 14 digitos");
+                }
+            });
+        </script> 
+    </body>
+</html>
